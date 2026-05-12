@@ -6,7 +6,6 @@ function BrandBlock() {
       <BrandMark />
       <div>
         <p className="text-lg font-extrabold text-[#111827]">Task Manager</p>
-        <p className="text-sm font-medium text-[#667085]">Admin Panel</p>
       </div>
     </div>
   );

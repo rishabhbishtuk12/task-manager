@@ -179,7 +179,7 @@ const updateTaskStatus = async (req, res) => {
 
     task.status = req.body.status;
 
-    if (!task.status === "completed") {
+    if (task.status === "completed") {
       task.todos.forEach(item => (item.completed = true));
       task.progress = 100;
     }

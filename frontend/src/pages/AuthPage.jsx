@@ -38,30 +38,29 @@ function AuthPage() {
   };
 
   return (
-    <main className="grid min-h-screen bg-[#f5f7fb] p-4 lg:grid-cols-[1fr_0.95fr]">
-      <section className="flex items-center justify-center rounded-lg bg-white px-5 py-10">
+    <main className="grid min-h-screen bg-slate-100 lg:grid-cols-[1fr_0.95fr]">
+      <section className="flex items-center justify-center bg-white px-5 py-10">
         <div className="w-full max-w-md">
           <BrandBlock />
           <div className="mt-10">
-            <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#246bfe]">
+            <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
               {mode === "login" ? "Welcome back" : "Create account"}
             </p>
-            <h1 className="mt-3 text-3xl font-extrabold text-[#111827]">
-              {mode === "login" ? "Login to your workspace" : "Start managing tasks"}
+            <h1 className="mt-2 text-3xl font-bold text-slate-900">
+              {mode === "login"
+                ? "Login to your workspace"
+                : "Start managing tasks"}
             </h1>
-            <p className="mt-3 text-sm leading-6 text-[#667085]">
-              Connect to the Express backend with your email and password.
-            </p>
           </div>
 
-          <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
+          <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
             {mode === "register" && (
               <Field label="Full Name">
                 <input
-                  className="h-11 w-full rounded-lg border border-[#dce3ee] px-3 text-sm outline-none focus:border-[#246bfe]"
+                  className="h-11 w-full rounded-lg border border-slate-100 px-3 text-sm outline-none focus:border-blue-600"
                   value={form.name}
                   onChange={event => updateField("name", event.target.value)}
-                  placeholder="Alex Morgan"
+                  placeholder="John Doe"
                   required
                 />
               </Field>
@@ -69,7 +68,7 @@ function AuthPage() {
 
             <Field label="Email">
               <input
-                className="h-11 w-full rounded-lg border border-[#dce3ee] px-3 text-sm outline-none focus:border-[#246bfe]"
+                className="h-11 w-full rounded-lg border border-slate-100 px-3 text-sm outline-none focus:border-blue-600"
                 type="email"
                 value={form.email}
                 onChange={event => updateField("email", event.target.value)}
@@ -80,7 +79,7 @@ function AuthPage() {
 
             <Field label="Password">
               <input
-                className="h-11 w-full rounded-lg border border-[#dce3ee] px-3 text-sm outline-none focus:border-[#246bfe]"
+                className="h-11 w-full rounded-lg border border-slate-100 px-3 text-sm outline-none focus:border-blue-600"
                 type="password"
                 value={form.password}
                 onChange={event => updateField("password", event.target.value)}
@@ -92,52 +91,79 @@ function AuthPage() {
             {mode === "register" && (
               <Field label="Admin Invite Token">
                 <input
-                  className="h-11 w-full rounded-lg border border-[#dce3ee] px-3 text-sm outline-none focus:border-[#246bfe]"
+                  className="h-11 w-full rounded-lg border border-slate-100 px-3 text-sm outline-none focus:border-blue-600"
                   value={form.adminInviteToken}
-                  onChange={event => updateField("adminInviteToken", event.target.value)}
+                  onChange={event =>
+                    updateField("adminInviteToken", event.target.value)
+                  }
                   placeholder="Optional"
                 />
               </Field>
             )}
 
             {authError && (
-              <p className="rounded-lg bg-[#fff7e8] px-3 py-2 text-sm font-semibold text-[#b77900]">
+              <p className="rounded-lg bg-slate-100 px-3 py-2 text-sm font-semibold text-red-600">
                 {authError}
               </p>
             )}
 
             <button
-              className="h-11 w-full rounded-lg bg-[#246bfe] text-sm font-bold text-white disabled:opacity-60"
+              className="h-11 w-full rounded-lg bg-blue-600 hover:bg-blue-700 cursor-pointer text-sm font-bold text-white disabled:opacity-60"
               disabled={isAuthLoading}
               type="submit"
             >
-              {isAuthLoading ? "Please wait..." : mode === "login" ? "Login" : "Create Account"}
+              {isAuthLoading
+                ? "Please wait..."
+                : mode === "login"
+                  ? "Login"
+                  : "Create Account"}
             </button>
           </form>
 
           <button
-            className="mt-5 text-sm font-bold text-[#246bfe]"
+            className="mt-5 text-sm font-medium text-slate-600 cursor-pointer"
             type="button"
-            onClick={() => setMode(current => (current === "login" ? "register" : "login"))}
+            onClick={() =>
+              setMode(current => (current === "login" ? "register" : "login"))
+            }
           >
-            {mode === "login"
-              ? "Need an account? Register"
-              : "Already have an account? Login"}
+            {mode === "login" ? (
+              <p>
+                Need an account?{" "}
+                <span className="cursor-pointer hover:text-blue-600 hover:underline">
+                  Register
+                </span>
+              </p>
+            ) : (
+              <p>
+                Already have an account?{" "}
+                <span className="cursor-pointer hover:text-blue-600 hover:underline">
+                  Login
+                </span>
+              </p>
+            )}
           </button>
         </div>
       </section>
 
-      <section className="hidden items-center justify-center rounded-lg bg-[#246bfe] p-10 text-white lg:flex">
+      <section className="hidden items-center justify-center bg-blue-600 p-10 text-white lg:flex">
         <div className="max-w-lg">
-          <p className="text-sm font-bold uppercase tracking-[0.2em] text-white/70">
+          <p className="text-sm font-bold uppercase tracking-widest text-white/70">
             Task Manager
           </p>
-          <h2 className="mt-4 text-5xl font-extrabold leading-tight">
-            Your dashboard now talks to the real backend.
+          <h2 className="mt-4 text-4xl font-extrabold leading-tight">
+            Take Control of Your Time and Productivity.
           </h2>
           <div className="mt-10 grid gap-4">
-            {["JWT auth", "MongoDB tasks", "Admin team data"].map(item => (
-              <div key={item} className="rounded-lg bg-white/12 p-4 text-lg font-bold">
+            {[
+              "Prioritization & Time Management",
+              "Real-time Tracking & Progress Updates",
+              "Seamless Collaboration & Team Alignment",
+            ].map(item => (
+              <div
+                key={item}
+                className="rounded-lg bg-white/12 p-4 text-lg font-semibold"
+              >
                 {item}
               </div>
             ))}
@@ -151,7 +177,9 @@ function AuthPage() {
 function Field({ label, children }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-bold text-[#344054]">{label}</span>
+      <span className="mb-2 block text-sm font-medium text-slate-700">
+        {label}
+      </span>
       {children}
     </label>
   );

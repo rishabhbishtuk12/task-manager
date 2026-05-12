@@ -19,10 +19,6 @@ const userSchema = new mongoose.Schema(
       required: true,
       minLength: 8,
     },
-    profilePic: {
-      type: String,
-      default: process.env.DEFAULT_AVATAR_URL,
-    },
     role: {
       type: String,
       enum: ["member", "admin"],

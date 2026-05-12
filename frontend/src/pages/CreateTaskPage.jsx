@@ -5,8 +5,8 @@ import { useTasks } from "../context/TaskContext";
 const initialForm = {
   title: "",
   description: "",
-  owner: "Ananya",
-  priority: "Medium",
+  owner: "",
+  priority: "",
   due: "",
 };
 
@@ -16,10 +16,10 @@ function CreateTaskPage() {
   const [form, setForm] = useState(initialForm);
 
   const updateField = (field, value) => {
-    setForm((current) => ({ ...current, [field]: value }));
+    setForm(current => ({ ...current, [field]: value }));
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async event => {
     event.preventDefault();
 
     const assignedUser = team.find(member => member.name === form.owner);
@@ -44,7 +44,9 @@ function CreateTaskPage() {
   return (
     <section>
       <div>
-        <h1 className="text-2xl font-bold text-[#111827] sm:text-3xl">Create Task</h1>
+        <h1 className="text-2xl font-bold text-[#111827] sm:text-3xl">
+          Create Task
+        </h1>
         <p className="mt-2 text-sm text-[#667085]">
           Add a new assignment with owner, priority, due date, and task details.
         </p>
@@ -59,7 +61,7 @@ function CreateTaskPage() {
             <input
               className="h-11 w-full rounded-lg border border-[#dce3ee] px-3 text-sm outline-none focus:border-[#246bfe]"
               value={form.title}
-              onChange={(event) => updateField("title", event.target.value)}
+              onChange={event => updateField("title", event.target.value)}
               placeholder="Enter task title"
             />
           </Field>
@@ -68,7 +70,7 @@ function CreateTaskPage() {
             <textarea
               className="min-h-32 w-full rounded-lg border border-[#dce3ee] px-3 py-3 text-sm outline-none focus:border-[#246bfe]"
               value={form.description}
-              onChange={(event) => updateField("description", event.target.value)}
+              onChange={event => updateField("description", event.target.value)}
               placeholder="Write task details"
             />
           </Field>
@@ -78,9 +80,12 @@ function CreateTaskPage() {
               <select
                 className="h-11 w-full rounded-lg border border-[#dce3ee] px-3 text-sm outline-none focus:border-[#246bfe]"
                 value={form.owner}
-                onChange={(event) => updateField("owner", event.target.value)}
+                onChange={event => updateField("owner", event.target.value)}
               >
-                {team.map((member) => (
+                <option key={"none"} value="">
+                  Select user
+                </option>
+                {team.map(member => (
                   <option key={member._id || member.name}>{member.name}</option>
                 ))}
               </select>
@@ -90,8 +95,9 @@ function CreateTaskPage() {
               <select
                 className="h-11 w-full rounded-lg border border-[#dce3ee] px-3 text-sm outline-none focus:border-[#246bfe]"
                 value={form.priority}
-                onChange={(event) => updateField("priority", event.target.value)}
+                onChange={event => updateField("priority", event.target.value)}
               >
+                <option>None</option>
                 <option>Low</option>
                 <option>Medium</option>
                 <option>High</option>
@@ -104,7 +110,7 @@ function CreateTaskPage() {
               className="h-11 w-full rounded-lg border border-[#dce3ee] px-3 text-sm outline-none focus:border-[#246bfe]"
               type="date"
               value={form.due}
-              onChange={(event) => updateField("due", event.target.value)}
+              onChange={event => updateField("due", event.target.value)}
             />
           </Field>
         </div>
@@ -125,8 +131,15 @@ function CreateTaskPage() {
             </div>
           </div>
           <button
-            className="mt-5 h-11 w-full rounded-lg bg-[#246bfe] text-sm font-bold text-white"
+            className="mt-5 h-11 w-full rounded-lg bg-[#246bfe] text-sm font-bold text-white disabled:cursor-not-allowed cursor-pointer disabled:bg-slate-500"
             type="submit"
+            disabled={
+              !form.title ||
+              !form.owner ||
+              !form.priority ||
+              !form.due ||
+              form.priority === "None"
+            }
           >
             Create Task
           </button>
@@ -139,7 +152,9 @@ function CreateTaskPage() {
 function Field({ label, children }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-bold text-[#344054]">{label}</span>
+      <span className="mb-2 block text-sm font-bold text-[#344054]">
+        {label}
+      </span>
       {children}
     </label>
   );

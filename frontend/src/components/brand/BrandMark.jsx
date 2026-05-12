@@ -1,6 +1,6 @@
 function BrandMark() {
   return (
-    <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#246bfe] text-base font-extrabold text-white">
+    <span className="flex p-2 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
       TM
     </span>
   );

@@ -1,4 +1,5 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
 
 export async function apiRequest(path, options = {}) {
   const { token, body, headers, ...rest } = options;
@@ -42,6 +43,26 @@ export const taskApi = {
       method: "POST",
       token,
       body: payload,
+    }),
+
+  update: (token, taskId, payload) =>
+    apiRequest(`/tasks/${taskId}`, {
+      method: "PUT",
+      token,
+      body: payload,
+    }),
+
+  updateStatus: (token, taskId, status) =>
+    apiRequest(`/tasks/${taskId}/status`, {
+      method: "PUT",
+      token,
+      body: { status },
+    }),
+
+  remove: (token, taskId) =>
+    apiRequest(`/tasks/${taskId}`, {
+      method: "DELETE",
+      token,
     }),
 };
 

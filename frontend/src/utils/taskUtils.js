@@ -1,13 +1,13 @@
 export function buildTaskStats(tasks) {
-  const completed = tasks.filter((task) => task.status === "completed").length;
-  const pending = tasks.filter((task) => task.status === "pending").length;
-  const inProgress = tasks.filter((task) => task.status === "in_progress").length;
+  const completed = tasks.filter(task => task.status === "completed").length;
+  const pending = tasks.filter(task => task.status === "pending").length;
+  const inProgress = tasks.filter(task => task.status === "in_progress").length;
 
   return [
     {
       label: "Total Tasks",
       value: String(tasks.length),
-      change: "+4 this week",
+      change: `${pending} pending & ${inProgress} in progress`,
       tone: "blue",
     },
     {
@@ -36,12 +36,12 @@ export function completionRate(tasks) {
     return 0;
   }
 
-  const completed = tasks.filter((task) => task.status === "completed").length;
+  const completed = tasks.filter(task => task.status === "completed").length;
   return Math.round((completed / tasks.length) * 100);
 }
 
 export function highPriorityCount(tasks) {
-  return tasks.filter((task) => task.priority === "High").length;
+  return tasks.filter(task => task.priority === "High").length;
 }
 
 export function filterTasks(tasks, filter) {
@@ -55,5 +55,5 @@ export function filterTasks(tasks, filter) {
     Completed: "completed",
   }[filter];
 
-  return tasks.filter((task) => task.status === normalizedFilter);
+  return tasks.filter(task => task.status === normalizedFilter);
 }

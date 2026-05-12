@@ -1,6 +1,16 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { tasks as initialTasks, team as fallbackTeam } from "../data/dashboardData";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import {
+  tasks as initialTasks,
+  team as fallbackTeam,
+} from "../data/dashboardData";
 import { useAuth } from "./AuthContext";
 import { taskApi, userApi } from "../utils/api";
 import { normalizeTask } from "../utils/formatters";
@@ -40,25 +50,70 @@ export function TaskProvider({ children }) {
     }
   }, [token, user?.role]);
 
-  const addTask = useCallback((task) => {
-    if (!token) {
-      setTasks((currentTasks) => [
-        normalizeTask({
-          _id: String(currentTasks.length + 1),
-          status: "pending",
-          todos: [],
-          ...task,
-        }),
-        ...currentTasks,
-      ]);
-      return Promise.resolve();
-    }
+  const addTask = useCallback(
+    task => {
+      if (!token) {
+        setTasks(currentTasks => [
+          normalizeTask({
+            _id: String(currentTasks.length + 1),
+            status: "pending",
+            todos: [],
+            ...task,
+          }),
+          ...currentTasks,
+        ]);
+        return Promise.resolve();
+      }
 
-    return taskApi.create(token, task).then(payload => {
-      setTasks(currentTasks => [normalizeTask(payload.task), ...currentTasks]);
+      return taskApi.create(token, task).then(payload => {
+        setTasks(currentTasks => [
+          normalizeTask(payload.task),
+          ...currentTasks,
+        ]);
+        return payload.task;
+      });
+    },
+    [token],
+  );
+
+  const updateTask = useCallback(
+    async (taskId, updates) => {
+      const payload = await taskApi.update(token, taskId, updates);
+
+      setTasks(currentTasks =>
+        currentTasks.map(task =>
+          task.id === taskId ? normalizeTask(payload.task) : task,
+        ),
+      );
+
       return payload.task;
-    });
-  }, [token]);
+    },
+    [token],
+  );
+
+  const updateTaskStatus = useCallback(
+    async (taskId, status) => {
+      const payload = await taskApi.updateStatus(token, taskId, status);
+
+      setTasks(currentTasks =>
+        currentTasks.map(task =>
+          task.id === taskId ? normalizeTask(payload.task) : task,
+        ),
+      );
+
+      return payload.task;
+    },
+    [token],
+  );
+
+  const deleteTask = useCallback(
+    async taskId => {
+      await taskApi.remove(token, taskId);
+
+      setTasks(currentTasks => currentTasks.filter(task => task.id !== taskId));
+    },
+    [token],
+  );
 
   useEffect(() => {
     loadData();
@@ -67,6 +122,9 @@ export function TaskProvider({ children }) {
   const value = useMemo(
     () => ({
       addTask,
+      updateTask,
+      updateTaskStatus,
+      deleteTask,
       dataError,
       isLoading,
       loadData,

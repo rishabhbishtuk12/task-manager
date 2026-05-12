@@ -1,14 +1,51 @@
 import { useState } from "react";
 import { useTasks } from "../context/TaskContext";
 import { filterTasks } from "../utils/taskUtils";
-import { formatDueDate, formatPriority, formatStatus } from "../utils/formatters";
+import {
+  formatDueDate,
+  formatPriority,
+  formatStatus,
+} from "../utils/formatters";
 
 const filters = ["All", "Pending", "In Progress", "Completed"];
 
 function ManageTasksPage() {
-  const { dataError, isLoading, tasks } = useTasks();
+  const {
+    dataError,
+    isLoading,
+    tasks,
+    updateTask,
+    updateTaskStatus,
+    deleteTask,
+  } = useTasks();
   const [activeFilter, setActiveFilter] = useState("All");
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editForm, setEditForm] = useState({
+    title: "",
+    description: "",
+    assignedTo: "",
+    due: "",
+    priority: "medium",
+  });
+
   const visibleTasks = filterTasks(tasks, activeFilter);
+
+  const startEdit = task => {
+    setEditingTaskId(task.id);
+
+    setEditForm({
+      title: task.title,
+      description: task.description || "",
+      assignedTo: task.assignedTo || "",
+      due: task.due ? new Date(task.due).toISOString().split("T")[0] : "",
+      priority: task.priority || "medium",
+    });
+  };
+
+  const saveEdit = async taskId => {
+    await updateTask(taskId, editForm);
+    setEditingTaskId(null);
+  };
 
   return (
     <section>
@@ -24,7 +61,7 @@ function ManageTasksPage() {
       )}
 
       <div className="mt-5 flex flex-wrap gap-2">
-        {filters.map((filter) => (
+        {filters.map(filter => (
           <button
             key={filter}
             className={[
@@ -46,38 +83,187 @@ function ManageTasksPage() {
           <p className="rounded-lg border border-[#e5eaf2] bg-white p-5 text-sm font-semibold text-[#667085]">
             Loading tasks...
           </p>
-        ) : visibleTasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
-        ))}
+        ) : (
+          visibleTasks.map(task => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              editingTaskId={editingTaskId}
+              editForm={editForm}
+              setEditForm={setEditForm}
+              startEdit={startEdit}
+              saveEdit={saveEdit}
+              setEditingTaskId={setEditingTaskId}
+              updateTaskStatus={updateTaskStatus}
+              deleteTask={deleteTask}
+            />
+          ))
+        )}
       </div>
     </section>
   );
 }
 
-function TaskCard({ task }) {
+function TaskCard({
+  task,
+  editingTaskId,
+  editForm,
+  setEditForm,
+  startEdit,
+  saveEdit,
+  setEditingTaskId,
+  updateTaskStatus,
+  deleteTask,
+}) {
+  const isEditing = editingTaskId === task.id;
   return (
-    <article className="rounded-lg border border-[#e5eaf2] bg-white p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-sm font-bold text-[#246bfe]">{formatPriority(task.priority)}</p>
-          <h2 className="mt-2 text-lg font-bold text-[#111827]">{task.title}</h2>
-        </div>
-        <span className="rounded-lg bg-[#f5f7fb] px-3 py-1.5 text-sm font-bold text-[#475467]">
-          {formatStatus(task.status)}
-        </span>
+    <article className="rounded-lg h-66 overflow-y-auto  border-[#e5eaf2] bg-white p-5">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-sm font-bold text-[#246bfe]">
+          {formatPriority(task.priority)}
+        </p>
+        <select
+          className="rounded-lg border p-2"
+          value={task.status}
+          onChange={e => updateTaskStatus(task.id, e.target.value)}
+        >
+          <option value="pending">Pending</option>
+          <option value="in_progress">In Progress</option>
+          <option value="completed">Completed</option>
+        </select>
       </div>
-      <p className="mt-3 text-sm leading-6 text-[#667085]">{task.description}</p>
-      <div className="mt-5 flex items-center justify-between text-sm">
-        <span className="font-semibold text-[#344054]">{task.owner}</span>
-        <span className="font-medium text-[#667085]">{formatDueDate(task.due)}</span>
+      <div className="mt-3 space-y-3">
+        {isEditing ? (
+          <>
+            <input
+              className="w-full rounded border p-2"
+              value={editForm.title}
+              placeholder="Task title"
+              onChange={e =>
+                setEditForm({
+                  ...editForm,
+                  title: e.target.value,
+                })
+              }
+            />
+
+            <textarea
+              className="w-full rounded border p-2"
+              rows={3}
+              value={editForm.description}
+              placeholder="Task description"
+              onChange={e =>
+                setEditForm({
+                  ...editForm,
+                  description: e.target.value,
+                })
+              }
+            />
+
+            {/* Assigned User */}
+            <select
+              className="w-full rounded border p-2"
+              value={editForm.assignedTo}
+              onChange={e =>
+                setEditForm({
+                  ...editForm,
+                  assignedTo: e.target.value,
+                })
+              }
+            >
+              <option value="">Select User</option>
+
+              <option value="John">John</option>
+              <option value="Sarah">Sarah</option>
+              <option value="Alex">Alex</option>
+            </select>
+
+            {/* Due Date */}
+            <input
+              type="date"
+              className="w-full rounded border p-2"
+              value={editForm.due}
+              onChange={e =>
+                setEditForm({
+                  ...editForm,
+                  due: e.target.value,
+                })
+              }
+            />
+
+            {/* Priority */}
+            <select
+              className="w-full rounded border p-2"
+              value={editForm.priority}
+              onChange={e =>
+                setEditForm({
+                  ...editForm,
+                  priority: e.target.value,
+                })
+              }
+            >
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </>
+        ) : (
+          <>
+            <p className="text-sm leading-6 text-[#667085]">
+              {task.description}
+            </p>
+
+            <div className="mt-3 space-y-2 text-sm text-[#475467]">
+              <p>
+                <strong>Assigned To:</strong>{" "}
+                {task.assignedTo || "Not Assigned"}
+              </p>
+
+              <p>
+                <strong>Due:</strong> {formatDueDate(task.due)}
+              </p>
+
+              <p>
+                <strong>Status:</strong> {formatStatus(task.status)}
+              </p>
+            </div>
+          </>
+        )}
       </div>
-      <div className="mt-4 space-y-2">
-        {task.checklist.map((item) => (
-          <div key={item} className="flex items-center gap-2 text-sm text-[#667085]">
-            <span className="h-2 w-2 rounded-full bg-[#246bfe]" />
-            {item}
-          </div>
-        ))}
+      {/* Buttons */}
+      <div className="mt-5 flex gap-2">
+        {isEditing ? (
+          <>
+            <button
+              className="rounded bg-green-600 hover:bg-green-700 cursor-pointer px-4 py-2 text-white"
+              onClick={() => saveEdit(task.id)}
+            >
+              Save
+            </button>
+
+            <button
+              className="rounded bg-gray-500 hover:bg-gray-600 cursor-pointer px-4 py-2 text-white"
+              onClick={() => setEditingTaskId(null)}
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              className="rounded bg-blue-600 hover:bg-blue-700 cursor-pointer px-4 py-2 text-white"
+              onClick={() => startEdit(task)}
+            >
+              Edit
+            </button>
+            <button
+              className="rounded bg-red-600 hover:bg-red-700 cursor-pointer px-4 py-2 text-white"
+              onClick={() => deleteTask(task.id)}
+            >
+              Delete
+            </button>
+          </>
+        )}
       </div>
     </article>
   );
