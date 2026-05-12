@@ -1,5 +1,4 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export async function apiRequest(path, options = {}) {
   const { token, body, headers, ...rest } = options;
@@ -24,12 +23,12 @@ export async function apiRequest(path, options = {}) {
 }
 
 export const authApi = {
-  login: credentials =>
+  login: (credentials) =>
     apiRequest("/auth/login", {
       method: "POST",
       body: credentials,
     }),
-  register: payload =>
+  register: (payload) =>
     apiRequest("/auth/register", {
       method: "POST",
       body: payload,
@@ -37,7 +36,7 @@ export const authApi = {
 };
 
 export const taskApi = {
-  list: token => apiRequest("/tasks", { token }),
+  list: (token) => apiRequest("/tasks", { token }),
   create: (token, payload) =>
     apiRequest("/tasks", {
       method: "POST",
@@ -67,5 +66,5 @@ export const taskApi = {
 };
 
 export const userApi = {
-  list: token => apiRequest("/users", { token }),
+  list: (token) => apiRequest("/users", { token }),
 };

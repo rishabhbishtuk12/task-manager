@@ -25,6 +25,13 @@ app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/tasks", taskRouter);
 
+app.get("/", (_, res) => {
+  return res.json({
+    success: true,
+    message: "Task manager is up and running 🚀",
+  });
+});
+
 connectDB();
 
 const PORT = process.env.PORT || 5000;
