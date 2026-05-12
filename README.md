@@ -1,187 +1,240 @@
-# Task Manager MERN App
+# Task Manager
 
-A full-stack task manager/admin panel built with a React + Vite frontend and an Express + MongoDB backend.
+A full-stack **Task Management System** built with the **MERN Stack** that helps teams and individuals manage tasks efficiently. This application provides authentication, role-based access, dashboard analytics, task assignment, checklist tracking, and user management.
 
-The app includes authentication, dashboard stats, task management, task creation, and team member views. The frontend is organized with pages, routes, context, utilities, and reusable components.
+---
+
+## Features
+
+### Authentication & Authorization
+
+- User Registration & Login
+- JWT-based Authentication
+- Protected Routes
+- Role-Based Access Control (**Admin & User**)
+
+### Task Management
+
+- Create Tasks
+- Update Existing Tasks
+- Delete Tasks
+- Assign Tasks to Team Members
+- Update Task Status
+- Task Checklist / Todo Management
+
+### Dashboard Analytics
+
+- Admin Dashboard
+- User Dashboard
+- Task Insights & Statistics
+- Recent Task Activity
+
+### Team Management
+
+- View Team Members
+- User Profile Management
+- Role-Based User Access
+
+### Image Upload Support
+
+- Profile image upload using **Multer**
+
+---
 
 ## Tech Stack
 
-- Frontend: React 19, Vite, Tailwind CSS
-- Backend: Node.js, Express, MongoDB, Mongoose
-- Auth: JWT, bcryptjs
-- Uploads: multer
+### Frontend
 
-## Project Structure
+- **React.js**
+- **Vite**
+- **Tailwind CSS**
 
-```text
-.
-+-- backend
-|   +-- src
-|   |   +-- config
-|   |   +-- controllers
-|   |   +-- middlewares
-|   |   +-- models
-|   |   +-- routes
-|   |   +-- uploads
-|   +-- .env
-|   +-- package.json
-|   +-- server.js
-+-- frontend
-    +-- src
-    |   +-- components
-    |   +-- context
-    |   +-- data
-    |   +-- pages
-    |   +-- routes
-    |   +-- utils
-    +-- package.json
-    +-- vite.config.js
+### Backend
+
+- **Node.js**
+- **Express.js**
+- **MongoDB**
+- **Mongoose**
+- **JWT Authentication**
+- **bcryptjs**
+- **Multer**
+
+---
+
+## 📂 Project Structure
+
+```bash
+task-manager/
+│── backend/
+│   ├── src/
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── middlewares/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   └── uploads/
+│   ├── package.json
+│   └── server.js
+│
+│── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── pages/
+│   │   ├── routes/
+│   │   ├── utils/
+│   │   └── assets/
+│   ├── package.json
+│   └── vite.config.js
+│
+└── README.md
 ```
 
-## Backend Setup
+---
 
-Go to the backend folder:
+## Installation & Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/rishabhbishtuk12/task-manager.git
+cd task-manager
+```
+
+---
+
+### 2. Backend Setup
+
+Navigate to backend folder:
 
 ```bash
 cd backend
+```
+
+Install dependencies:
+
+```bash
 npm install
 ```
 
-Create or update `backend/.env`:
+Create a `.env` file inside backend:
 
 ```env
-PORT=8000
+PORT=5000
 MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
 CLIENT_URL=http://localhost:5173
-DEFAULT_AVATAR_URL=your_default_avatar_url
-JWT_SECRET=your_jwt_secret
-ADMIN_INVITE_TOKEN=your_admin_invite_token
 ```
 
-Start the backend:
-
-```bash
-npm start
-```
-
-For development with nodemon:
+Start backend server:
 
 ```bash
 npm run dev
 ```
 
-Backend runs at:
+Server will run on:
 
-```text
-http://localhost:8000
+```bash
+http://localhost:5000
 ```
 
-## Frontend Setup
+---
 
-Go to the frontend folder:
+### 3. Frontend Setup
+
+Open a new terminal:
 
 ```bash
 cd frontend
+```
+
+Install dependencies:
+
+```bash
 npm install
 ```
 
-Optional frontend environment variable:
-
-```env
-VITE_API_BASE_URL=http://localhost:8000/api
-```
-
-Start the frontend:
+Start frontend:
 
 ```bash
 npm run dev
 ```
 
-Frontend runs at:
+Frontend will run on:
 
-```text
+```bash
 http://localhost:5173
 ```
 
-## Main API Routes
+---
 
-Auth:
+## API Endpoints
 
-```text
-POST /api/auth/register
-POST /api/auth/login
-GET  /api/auth/profile
-PUT  /api/auth/profile
-POST /api/auth/upload-image
+### Authentication
+
+| Method | Endpoint                 | Description      |
+| ------ | ------------------------ | ---------------- |
+| POST   | `/api/auth/register`     | Register user    |
+| POST   | `/api/auth/login`        | Login user       |
+| GET    | `/api/auth/profile`      | Get user profile |
+| PUT    | `/api/auth/profile`      | Update profile   |
+| POST   | `/api/auth/upload-image` | Upload image     |
+
+### Tasks
+
+| Method | Endpoint                         | Description              |
+| ------ | -------------------------------- | ------------------------ |
+| GET    | `/api/tasks`                     | Get all tasks            |
+| GET    | `/api/tasks/:id`                 | Get task by ID           |
+| POST   | `/api/tasks`                     | Create task (Admin Only) |
+| PUT    | `/api/tasks/:id`                 | Update task              |
+| DELETE | `/api/tasks/:id`                 | Delete task (Admin Only) |
+| PUT    | `/api/tasks/:id/status`          | Update task status       |
+| PUT    | `/api/tasks/:id/todo`            | Update checklist         |
+| GET    | `/api/tasks/dashboard-data`      | Admin dashboard          |
+| GET    | `/api/tasks/user-dashboard-data` | User dashboard           |
+
+### Users
+
+| Method | Endpoint         | Description    |
+| ------ | ---------------- | -------------- |
+| GET    | `/api/users`     | Get all users  |
+| GET    | `/api/users/:id` | Get user by ID |
+
+---
+
+## Environment Variables
+
+Backend `.env` variables:
+
+```env
+PORT=
+MONGO_URI=
+JWT_SECRET=
+CLIENT_URL=
 ```
 
-Tasks:
+---
 
-```text
-GET    /api/tasks
-GET    /api/tasks/dashboard-data
-GET    /api/tasks/user-dashboard-data
-GET    /api/tasks/:id
-POST   /api/tasks
-PUT    /api/tasks/:id
-DELETE /api/tasks/:id
-PUT    /api/tasks/:id/status
-PUT    /api/tasks/:id/todo
-```
+## Future Improvements
 
-Users:
+- Email Notifications
+- Task Deadlines & Reminders
+- Real-time Collaboration
+- Dark Mode
+- Drag & Drop Task Board
+- Task Priority Filters
 
-```text
-GET /api/users
-GET /api/users/:id
-```
+---
 
-## Current Frontend Pages
+## Contributing
 
-- Login/Register
-- Dashboard
-- Manage Tasks
-- Create Task
-- Team Members
+Contributions are welcome.
 
-## Notes
+Fork the repository and create a pull request.
 
-- Task and user routes require a JWT token.
-- Creating tasks and viewing all users require an admin account.
-- To register as admin, use the backend `ADMIN_INVITE_TOKEN`.
-- The frontend stores the logged-in user session in `localStorage`.
+---
 
-## Useful Commands
+## Author
 
-Frontend:
-
-```bash
-npm run dev
-npm run build
-npm run lint
-```
-
-Backend:
-
-```bash
-npm start
-npm run dev
-```
-
-## Verification
-
-Before considering changes complete, run:
-
-```bash
-cd frontend
-npm run lint
-npm run build
-```
-
-The backend can be checked by starting it and visiting:
-
-```text
-http://localhost:8000/api/tasks
-```
-
-Without login, this should return `401`, which means the protected route is working.
+**Rishabh Bisht**
